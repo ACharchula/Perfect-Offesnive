@@ -51,12 +51,12 @@ def get_unique_players_and_avg_score(conn):
 def select_all_matches_with_player_stats_and_goals(conn):
 
     cur = conn.cursor()
-    ##cur.execute("SELECT home_player_9, home_player_10, home_player_11, goal FROM Match")
-    cur.execute("SELECT home_player_9, home_player_10, home_player_11, shoton FROM Match")
+    cur.execute("SELECT home_player_9, home_player_10, home_player_11, goal FROM Match")
+    #cur.execute("SELECT home_player_9, home_player_10, home_player_11, shoton FROM Match")
     home_players = cur.fetchall()
 
-    ##cur.execute("SELECT away_player_9, away_player_10, away_player_11, goal FROM Match")
-    cur.execute("SELECT away_player_9, away_player_10, away_player_11, shoton FROM Match")
+    cur.execute("SELECT away_player_9, away_player_10, away_player_11, goal FROM Match")
+    #cur.execute("SELECT away_player_9, away_player_10, away_player_11, shoton FROM Match")
     away_players = cur.fetchall()
 
     p1 = change_id_to_player_stats_and_count_goals(home_players)
