@@ -4,17 +4,17 @@ import random
 
 class SimulatedAnnealing(Annealer):
 
-    def __init__(self, players_and_scores):
-        self.players_and_scores = players_and_scores
-        self.state = players_and_scores[0]
+    def __init__(self, state, data):
+        self.data = data
+        self.state = state
         super(SimulatedAnnealing, self).__init__(self.state)
 
     def move(self):
-        player = random.randint(0, 2)
-        # EHHHH...
+        key = random.choice(self.state.neighbours)
+        self.state = self.data.players_and_scores[key]
 
     def energy(self):
-        score = self.state[len(self.state) - 1]
+        score = self.state.score
         return 20 - score
         # 20 is a random number, the state will change if energy decrease
 
@@ -32,6 +32,9 @@ class Player:
         else:
             return False
 
+    def __str__(self):
+        return self.overall + " " + self.shot + " " + self.finishing
+
 
 class PlayersAndScore:
 
@@ -39,7 +42,7 @@ class PlayersAndScore:
         self.player1 = Player(key[0], key[1], key[2])
         self.player2 = Player(key[3], key[4], key[5])
         self.player3 = Player(key[6], key[7], key[8])
-        self.score = value
+        self.score = float(value)
         self.neighbours = list()
 
     def add_neighbour(self, neighbour):
@@ -72,6 +75,6 @@ class AllData:
                     continue
 
                 if v2.check_if_contains_a_player(v1.player1) or v2.check_if_contains_a_player(v1.player2) or v2.check_if_contains_a_player(v1.player3):
-                    v1.add_neighbour(v2)
+                    v1.add_neighbour(k2)
 
             count += 1
