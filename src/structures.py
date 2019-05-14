@@ -1,3 +1,6 @@
+import pickle
+
+
 class Player:
 
     def __init__(self, overall, shot, finishing):
@@ -42,7 +45,16 @@ class AllData:
         for k, v in players_scores.items():
             self.players_and_scores[k] = PlayersAndScore(k, v)
 
+    def __str__(self):
+        str = 0
+        for k, v in self.players_and_scores.items():
+            str += 1
+
+        return str.__str__()
+
+
     # neighbour is a row with at least one the same player among attackers
+
     def assign_neighbours(self):
         count = 0
         for k1, v1 in self.players_and_scores.items():
@@ -56,3 +68,15 @@ class AllData:
                     v1.add_neighbour(k2)
 
             count += 1
+
+    def save_data_to_file(self, filename):
+        file = open(filename, "wb")
+        pickle.dump(self, file)
+        file.close()
+
+    @staticmethod
+    def load_data_from_file(filename):
+        file = open(filename, "rb")
+        result = pickle.load(file)
+        file.close()
+        return result

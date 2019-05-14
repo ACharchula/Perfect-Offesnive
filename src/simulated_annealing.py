@@ -1,6 +1,8 @@
 from simanneal import Annealer
+import time
+
 import random
-from src.structures import *
+from structures import *
 
 
 class SimulatedAnnealing(Annealer):
@@ -20,14 +22,14 @@ class SimulatedAnnealing(Annealer):
         # 20 is a random number, the state will change if energy decrease
 
 
-def perform_simulated_annealing(start_key, players_and_scores, steps):
-    data = AllData(players_and_scores)
-    data.assign_neighbours()
+def perform_simulated_annealing(start_key, data, steps):
     sa = SimulatedAnnealing(data.players_and_scores[start_key], data)
     sa.steps = steps
     print('===Simulated Annealing===')
+    start = time.time()
     state, e = sa.anneal()
-
+    end = time.time()
+    print("Time =" + (end - start).__str__() )
     print(state.player1)
     print(state.player2)
     print(state.player3)
