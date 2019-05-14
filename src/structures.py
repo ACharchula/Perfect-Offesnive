@@ -9,7 +9,8 @@ class Player:
         self.finishing = finishing
 
     def __eq__(self, other):
-        if other.overall == self.overall and other.shot == self.shot and other.finishing == self.finishing:
+        if int(other.overall) == int(self.overall) and int(other.shot) == int(self.shot) and int(
+                other.finishing) == int(self.finishing):
             return True
         else:
             return False
@@ -45,13 +46,21 @@ class AllData:
         for k, v in players_scores.items():
             self.players_and_scores[k] = PlayersAndScore(k, v)
 
-    def __str__(self):
-        str = 0
+    def __contains__(self, players):
         for k, v in self.players_and_scores.items():
-            str += 1
+            plrs = [Player(k[0], k[1], k[2]), Player(k[3], k[4], k[5]), Player(k[6], k[7], k[8])]
 
-        return str.__str__()
+            present = 0
+            for player in players:
+                for plr in plrs:
+                    if player.__eq__(plr):
+                        present += 1
 
+            if present == 3:
+                print("There is such an individual")
+                return True
+
+        return False
 
     # neighbour is a row with at least one the same player among attackers
 
