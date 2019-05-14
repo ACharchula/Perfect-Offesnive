@@ -1,6 +1,7 @@
 import csv
 
 from src.simulated_annealing import *
+from src.linear_check import *
 
 players_and_scores = dict()
 
@@ -18,29 +19,7 @@ with open('players_with_avg_goals.csv') as csv_file:
 
 print(f'Processed {count} lines.')
 
-key = ('60','55','31','65','67','64','64','74','70')
+key = ('60', '55', '31', '65', '67', '64', '64', '74', '70')
 
-data = AllData(players_and_scores)
-sa = SimulatedAnnealing(data.players_and_scores[key], data)
-sa.steps = 25000
-print('===Simulated Annealing===')
-state, e = sa.anneal()
-
-print(state.player1)
-print(state.player2)
-print(state.player3)
-print(state.score)
-print('=========================')
-
-
-bestKey = 0
-bestValue = 0.0
-for k,v in players_and_scores.items():
-    if float(v) > bestValue:
-        bestKey = k
-        bestValue = float(v)
-
-print(bestKey)
-print(bestValue)
-
-
+perform_simulated_annealing(key, players_and_scores, 25000)
+correct_result(players_and_scores)
