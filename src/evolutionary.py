@@ -25,10 +25,9 @@ toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.ind
 
 ind = toolbox.individual()  # [ Player1, Player2, Player3 ]
 
-print(ind[0])
-print("\n")
-print(ind[1])
-print("\n")
-print(ind[2])
-print("\n")
+#defines a population to be a list of individuals
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+#initializes our population with 100 individuals
+pop = toolbox.population(n=100)
+
 
