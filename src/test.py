@@ -2,6 +2,7 @@ import csv
 
 from simulated_annealing import *
 from linear_check import *
+from structures import AllData
 
 players_and_scores = dict()
 

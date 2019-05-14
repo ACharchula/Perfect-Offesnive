@@ -15,7 +15,7 @@ class Player:
             return False
 
     def __str__(self):
-        return self.overall + " " + self.shot + " " + self.finishing
+        return self.overall.__str__() + " " + self.shot.__str__() + " " + self.finishing.__str__()
 
 
 class PlayersAndScore:
