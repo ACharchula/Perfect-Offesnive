@@ -30,13 +30,12 @@ def cross_over(individual1, individual2):
 
 # we randomly choose if we mutate or not. If we do we randomly pick a neighbor (if one exists) of the individual
 def mutate(individual):
-    if random.uniform(0, 1) < 0.1:
-        return data.get_random_neighbor(individual)
-    return individual
+    return data.get_random_neighbor(individual)
 
 
-def init_individual():
-    return create_player() + create_player() + create_player()
+def init_individual(ind_class):
+    return ind_class(data.get_random_players())
+    # return ind_class(create_player() + create_player() + create_player())
 
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))  # weights is 1.0 because we want to maximize it
@@ -45,34 +44,86 @@ creator.create("Individual", tuple, fitness=creator.FitnessMax)  # our individua
 
 toolbox = base.Toolbox()
 # define one gene (index) to be a player returned by create_player method
-toolbox.register("indices", create_player)
+# toolbox.register("indices", create_player)
 # define individual to call indices function (create_player) 3 times
-toolbox.register("individual", init_individual)
+toolbox.register("individual", init_individual, creator.Individual)
 
 toolbox.register("evaluate", evaluate)
 toolbox.register("mate", cross_over)
 toolbox.register("mutate", mutate)
-toolbox.register("select", tools.selTournament, tournsize=3)
+toolbox.register("select", tools.selTournament, tournsize=100)
 
 # defines a population to be a list of individuals
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-# ind1 = toolbox.individual()  # [ Player1, Player2, Player3 ]
-# ind2 = toolbox.individual()  # [ Player1, Player2, Player3 ]
-# # ind.fitness.values = evaluate(ind)
-# print(ind1)
-# print(ind2)
-#
-# print("------------------")
-# crosoverd = toolbox.mate(ind1, ind2)
-# for ind in crosoverd:
-#     print(ind)
-#
-# print("------------------")
-#
-# mutated = toolbox.mutate(plrs)
-# print(mutated)
+def main():
+    pop = toolbox.population(n=1000)
+
+    fitnesses = list(map(toolbox.evaluate, pop))
+    for ind, fit in zip(pop, fitnesses):
+        ind.fitness.values = fit
+
+    fits = [ind.fitness.values[0] for ind in pop]
+
+    CXPB = 0.5
+    MUTPB = 0.2
+
+    g = 0
+    while max(fits) < 9.0 and g < 10000:
+        g = g + 1
+        print("-- Generation %i --" % g)
 
 
-# initializes our population with 100 individuals
-pop = toolbox.population(n=100)
+        # Select the next generation individuals
+        offspring = toolbox.select(pop, len(pop))
+        # Clone the selected individuals
+        offspring = list(map(toolbox.clone, offspring))
+
+        for child1, child2 in zip(offspring[::2], offspring[1::2]):
+
+            # cross two individuals with probability CXPB
+            if random.random() < CXPB:
+                toolbox.mate(child1, child2)
+
+                # fitness values of the children
+                # must be recalculated later
+                del child1.fitness.values
+                del child2.fitness.values
+
+        for mutant in offspring:
+
+            # mutate an individual with probability MUTPB
+            if random.random() < MUTPB:
+                toolbox.mutate(mutant)
+                del mutant.fitness.values
+
+        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
+        fitnesses = map(toolbox.evaluate, invalid_ind)
+        for ind, fit in zip(invalid_ind, fitnesses):
+            ind.fitness.values = fit
+
+        print("  Evaluated %i individuals" % len(invalid_ind))
+
+        # The population is entirely replaced by the offspring
+        pop[:] = offspring
+
+        # Gather all the fitnesses in one list and print the stats
+        fits = [ind.fitness.values[0] for ind in pop]
+
+        length = len(pop)
+        mean = sum(fits) / length
+        sum2 = sum(x * x for x in fits)
+        std = abs(sum2 / length - mean ** 2) ** 0.5
+
+        print("  Min %s" % min(fits))
+        print("  Max %s" % max(fits))
+        print("  Avg %s" % mean)
+        print("  Std %s" % std)
+
+        print("-- End of (successful) evolution --")
+
+        best_ind = tools.selBest(pop, 1)[0]
+        print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+
+if __name__ == "__main__":
+    main()

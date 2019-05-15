@@ -91,6 +91,9 @@ class AllData:
         else:
             return players_tuple
 
+    def get_random_players(self):
+        return random.choice(list(self.players_and_scores.keys()))
+
     @staticmethod
     def load_data_from_file(filename):
         file = open(filename, "rb")
