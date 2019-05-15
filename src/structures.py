@@ -1,4 +1,5 @@
 import pickle
+import random
 
 
 class Player:
@@ -9,13 +10,17 @@ class Player:
         self.finishing = finishing
 
     def __eq__(self, other):
-        if other.overall == self.overall and other.shot == self.shot and other.finishing == self.finishing:
+        if int(other.overall) == int(self.overall) and int(other.shot) == int(self.shot) and int(
+                other.finishing) == int(self.finishing):
             return True
         else:
             return False
 
     def __str__(self):
-        return self.overall + " " + self.shot + " " + self.finishing
+        return self.overall.__str__() + " " + self.shot.__str__() + " " + self.finishing.__str__()
+
+    def get_stats(self):
+        return [self.overall.__str__(), self.shot.__str__(), self.finishing.__str__()]
 
 
 class PlayersAndScore:
@@ -45,13 +50,8 @@ class AllData:
         for k, v in players_scores.items():
             self.players_and_scores[k] = PlayersAndScore(k, v)
 
-    def __str__(self):
-        str = 0
-        for k, v in self.players_and_scores.items():
-            str += 1
-
-        return str.__str__()
-
+    def __contains__(self, players):
+        return players in self.players_and_scores
 
     # neighbour is a row with at least one the same player among attackers
 
@@ -73,6 +73,26 @@ class AllData:
         file = open(filename, "wb")
         pickle.dump(self, file)
         file.close()
+
+    def get_score(self, players_tuple):
+        if players_tuple in self.players_and_scores is not None:
+            return self.players_and_scores[players_tuple].score
+        else:
+            return 0.0
+
+    # returns random neighbor of a tuple if it exists, if not it returns original tuple itself
+    def get_random_neighbor(self, players_tuple):
+        if players_tuple in self.players_and_scores is not None:
+            neighbors = self.players_and_scores[players_tuple].neighbours
+            if len(neighbors) > 0:
+                return random.choice(neighbors)
+            else:
+                return players_tuple
+        else:
+            return players_tuple
+
+    def get_random_players(self):
+        return random.choice(list(self.players_and_scores.keys()))
 
     @staticmethod
     def load_data_from_file(filename):

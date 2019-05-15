@@ -2,8 +2,6 @@ from simanneal import Annealer
 import time
 
 import random
-from structures import *
-
 
 class SimulatedAnnealing(Annealer):
 

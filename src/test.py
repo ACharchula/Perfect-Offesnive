@@ -1,7 +1,8 @@
 import csv
 
-from simulated_annealing import *
-from linear_check import *
+from src.simulated_annealing import *
+from src.linear_check import *
+from src.structures import AllData
 
 players_and_scores = dict()
 
@@ -23,5 +24,5 @@ key = ('60', '55', '31', '65', '67', '64', '64', '74', '70')
 
 data = AllData.load_data_from_file("przestrzen.txt")
 
-perform_simulated_annealing(key, data, 5000)
+perform_simulated_annealing(key, data, 500)
 correct_result(players_and_scores)
