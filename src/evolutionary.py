@@ -51,29 +51,36 @@ toolbox.register("individual", init_individual, creator.Individual)
 toolbox.register("evaluate", evaluate)
 toolbox.register("mate", cross_over)
 toolbox.register("mutate", mutate)
-toolbox.register("select", tools.selTournament, tournsize=100)
+toolbox.register("select", tools.selTournament, tournsize=4)
 
 # defines a population to be a list of individuals
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 def main():
-    pop = toolbox.population(n=1000)
+    pop = toolbox.population(n=10)
 
-    fitnesses = list(map(toolbox.evaluate, pop))
-    for ind, fit in zip(pop, fitnesses):
-        ind.fitness.values = fit
+
+
+    for ind in pop:
+        ind.fitness.values = toolbox.evaluate(ind)
 
     fits = [ind.fitness.values[0] for ind in pop]
+
+
+    print(fits)
+
 
     CXPB = 0.5
     MUTPB = 0.2
 
     g = 0
-    while max(fits) < 9.0 and g < 10000:
+    while max(fits) < 9.0 and g < 10:
         g = g + 1
         print("-- Generation %i --" % g)
 
-
+        for ind in pop:
+            print(ind)
+            print(ind.fitness)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
@@ -85,27 +92,17 @@ def main():
             if random.random() < CXPB:
                 toolbox.mate(child1, child2)
 
-                # fitness values of the children
-                # must be recalculated later
-                del child1.fitness.values
-                del child2.fitness.values
-
         for mutant in offspring:
 
             # mutate an individual with probability MUTPB
             if random.random() < MUTPB:
                 toolbox.mutate(mutant)
-                del mutant.fitness.values
-
-        invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
-        fitnesses = map(toolbox.evaluate, invalid_ind)
-        for ind, fit in zip(invalid_ind, fitnesses):
-            ind.fitness.values = fit
-
-        print("  Evaluated %i individuals" % len(invalid_ind))
 
         # The population is entirely replaced by the offspring
         pop[:] = offspring
+
+        for ind in pop:
+            ind.fitness.values = toolbox.evaluate(ind)
 
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
@@ -124,6 +121,7 @@ def main():
 
         best_ind = tools.selBest(pop, 1)[0]
         print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+
 
 if __name__ == "__main__":
     main()
