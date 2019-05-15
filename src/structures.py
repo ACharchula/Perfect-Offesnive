@@ -1,4 +1,5 @@
 import pickle
+import random
 
 
 class Player:
@@ -17,6 +18,9 @@ class Player:
 
     def __str__(self):
         return self.overall.__str__() + " " + self.shot.__str__() + " " + self.finishing.__str__()
+
+    def get_stats(self):
+        return [self.overall.__str__(), self.shot.__str__(), self.finishing.__str__()]
 
 
 class PlayersAndScore:
@@ -47,20 +51,7 @@ class AllData:
             self.players_and_scores[k] = PlayersAndScore(k, v)
 
     def __contains__(self, players):
-        for k, v in self.players_and_scores.items():
-            plrs = [Player(k[0], k[1], k[2]), Player(k[3], k[4], k[5]), Player(k[6], k[7], k[8])]
-
-            present = 0
-            for player in players:
-                for plr in plrs:
-                    if player.__eq__(plr):
-                        present += 1
-
-            if present == 3:
-                print("There is such an individual")
-                return True
-
-        return False
+        return players in self.players_and_scores
 
     # neighbour is a row with at least one the same player among attackers
 
@@ -82,6 +73,23 @@ class AllData:
         file = open(filename, "wb")
         pickle.dump(self, file)
         file.close()
+
+    def get_score(self, players_tuple):
+        if players_tuple in self.players_and_scores is not None:
+            return self.players_and_scores[players_tuple].score
+        else:
+            return 0.0
+
+    # returns random neighbor of a tuple if it exists, if not it returns original tuple itself
+    def get_random_neighbor(self, players_tuple):
+        if players_tuple in self.players_and_scores is not None:
+            neighbors = self.players_and_scores[players_tuple].neighbours
+            if len(neighbors) > 0:
+                return random.choice(neighbors)
+            else:
+                return players_tuple
+        else:
+            return players_tuple
 
     @staticmethod
     def load_data_from_file(filename):

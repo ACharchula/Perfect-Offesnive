@@ -1,8 +1,8 @@
 import csv
 
-from simulated_annealing import *
-from linear_check import *
-from structures import AllData
+from src.simulated_annealing import *
+from src.linear_check import *
+from src.structures import AllData
 
 players_and_scores = dict()
 
