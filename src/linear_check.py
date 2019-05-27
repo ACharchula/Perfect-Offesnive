@@ -1,6 +1,6 @@
 import time
 
-def correct_result(players_and_scores):
+def linear_search(players_and_scores):
     best_key = 0
     best_value = 0.0
     start = time.time()
