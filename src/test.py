@@ -6,7 +6,7 @@ from src.structures import AllData
 
 players_and_scores = dict()
 
-with open('players_with_avg_goals.csv') as csv_file:
+with open('players_with_avg_goals_2.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     count = 0
     for row in csv_reader:
@@ -20,9 +20,13 @@ with open('players_with_avg_goals.csv') as csv_file:
 
 print(f'Processed {count} lines.')
 
-key = ('60', '55', '31', '65', '67', '64', '64', '74', '70')
-
+key = ('82','75','76','78','82','78','74','81','74')
+# data = AllData(players_and_scores)
+# data.assign_neighbours()
+# data.save_data_to_file("przestrzen.txt")
 data = AllData.load_data_from_file("przestrzen.txt")
 
-perform_simulated_annealing(key, data, 500)
+perform_simulated_annealing(key, data, 700)
 correct_result(players_and_scores)
+
+# dodac takie cos co zauwazy ze od 100 krokow wybieramy to samo
