@@ -38,7 +38,7 @@ def simulated_annealing(shotons):
     else:
         data = AllData.load_data_from_file("przestrzen.txt")
 
-    perform_simulated_annealing(key, data, 2500)
+    perform_simulated_annealing(key, data, 600)
 
 simulated_annealing(False)
 linear_search(create_dict_from_file('players_with_avg_goals_2.csv'))
