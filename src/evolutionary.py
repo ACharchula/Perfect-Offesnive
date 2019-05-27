@@ -1,5 +1,3 @@
-import random
-
 from deap import base
 from deap import creator
 from deap import tools
@@ -25,12 +23,14 @@ def evaluate(individual):
 
 # crossover is about swapping last players of two threes
 def cross_over(individual1, individual2):
-    return individual1[:6] + individual2[6:10], individual2[:6] + individual1[6:10]
+    individual1 = individual1[:6] + individual2[6:10]
+    individual2 = individual2[:6] + individual1[6:10]
+    return creator.Individual(individual1), creator.Individual(individual2)
 
 
 # we randomly choose if we mutate or not. If we do we randomly pick a neighbor (if one exists) of the individual
 def mutate(individual):
-    return data.get_random_neighbor(individual)
+    return creator.Individual(data.get_random_neighbor(individual))
 
 
 def init_individual(ind_class):
@@ -51,52 +51,57 @@ toolbox.register("individual", init_individual, creator.Individual)
 toolbox.register("evaluate", evaluate)
 toolbox.register("mate", cross_over)
 toolbox.register("mutate", mutate)
-toolbox.register("select", tools.selTournament, tournsize=4)
+toolbox.register("select", tools.selTournament, tournsize=20)
 
 # defines a population to be a list of individuals
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
+
 def main():
-    pop = toolbox.population(n=10)
-
-
+    pop = toolbox.population(n=1000)
 
     for ind in pop:
         ind.fitness.values = toolbox.evaluate(ind)
 
     fits = [ind.fitness.values[0] for ind in pop]
 
-
     print(fits)
-
 
     CXPB = 0.5
     MUTPB = 0.2
 
     g = 0
-    while max(fits) < 9.0 and g < 10:
+    while max(fits) < 9.0 and g < 100:
         g = g + 1
         print("-- Generation %i --" % g)
 
-        for ind in pop:
-            print(ind)
-            print(ind.fitness)
+        # for ind in pop:
+        #     print(ind)
+        #     print(ind.fitness)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
         offspring = list(map(toolbox.clone, offspring))
 
-        for child1, child2 in zip(offspring[::2], offspring[1::2]):
-
-            # cross two individuals with probability CXPB
+        for i in range(0, len(offspring) - 1, 2):
             if random.random() < CXPB:
-                toolbox.mate(child1, child2)
+                offspring[i], offspring[i + 1] = toolbox.mate(offspring[i], offspring[i + 1])
 
-        for mutant in offspring:
-
-            # mutate an individual with probability MUTPB
+        for i in range(len(offspring)):
             if random.random() < MUTPB:
-                toolbox.mutate(mutant)
+                offspring[i] = toolbox.mutate(offspring[i])
+
+        # for child1, child2 in zip(offspring[::2], offspring[1::2]):
+        #
+        #     # cross two individuals with probability CXPB
+        #     if random.random() < CXPB:
+        #         (child1, child2) = toolbox.mate(child1, child2)
+
+        # for mutant in offspring:
+        #
+        #     # mutate an individual with probability MUTPB
+        #     if random.random() < MUTPB:
+        #         mutant = toolbox.mutate(mutant)
 
         # The population is entirely replaced by the offspring
         pop[:] = offspring
