@@ -80,6 +80,9 @@ class AllData:
         else:
             return 0.0
 
+    def get_players_and_scores(self):
+        return self.players_and_scores
+
     # returns random neighbor of a tuple if it exists, if not it returns original tuple itself
     def get_random_neighbor(self, players_tuple):
         if players_tuple in self.players_and_scores is not None:
@@ -90,6 +93,9 @@ class AllData:
                 return players_tuple
         else:
             return players_tuple
+
+    def get_all_neighbors(self, players):
+        return self.players_and_scores[players].neighbours
 
     def get_random_players(self):
         return random.choice(list(self.players_and_scores.keys()))
