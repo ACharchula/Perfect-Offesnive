@@ -4,12 +4,7 @@ from deap import tools
 
 from src.structures import *
 
-data = AllData.load_data_from_file("przestrzen.txt")
-
-plrs = ('85', '87', '85', '78', '80', '81', '69', '67', '70')
-print(plrs[6:10])
-print(plrs[:6])
-
+data = AllData.load_data_from_file("przestrzen2.txt")
 
 # function used to generate random indices of class Player
 def create_player():
@@ -18,7 +13,7 @@ def create_player():
 
 
 def evaluate(individual):
-    return data.get_score(individual),
+    return data.get_score(individual),  # individual[0] + individual[2] + individual[5]
 
 
 # crossover is about swapping last players of two threes
@@ -58,7 +53,7 @@ toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 
 def main():
-    pop = toolbox.population(n=1000)
+    pop = toolbox.population(n=100)
 
     for ind in pop:
         ind.fitness.values = toolbox.evaluate(ind)
@@ -71,17 +66,15 @@ def main():
     MUTPB = 0.2
 
     g = 0
-    while max(fits) < 9.0 and g < 100:
+    while max(fits) < 13:
         g = g + 1
-        print("-- Generation %i --" % g)
+        # print("-- Generation %i --" % g)
 
-        # for ind in pop:
-        #     print(ind)
-        #     print(ind.fitness)
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
+        # offspring = list(map(toolbox.clone, offspring))
+        offspring.sort(key=lambda x: toolbox.evaluate(x), reverse=True)
 
         for i in range(0, len(offspring) - 1, 2):
             if random.random() < CXPB:
@@ -91,20 +84,8 @@ def main():
             if random.random() < MUTPB:
                 offspring[i] = toolbox.mutate(offspring[i])
 
-        # for child1, child2 in zip(offspring[::2], offspring[1::2]):
-        #
-        #     # cross two individuals with probability CXPB
-        #     if random.random() < CXPB:
-        #         (child1, child2) = toolbox.mate(child1, child2)
-
-        # for mutant in offspring:
-        #
-        #     # mutate an individual with probability MUTPB
-        #     if random.random() < MUTPB:
-        #         mutant = toolbox.mutate(mutant)
-
         # The population is entirely replaced by the offspring
-        pop[:] = offspring
+        pop = toolbox.select(pop + offspring, len(pop))
 
         for ind in pop:
             ind.fitness.values = toolbox.evaluate(ind)
@@ -117,15 +98,16 @@ def main():
         sum2 = sum(x * x for x in fits)
         std = abs(sum2 / length - mean ** 2) ** 0.5
 
-        print("  Min %s" % min(fits))
-        print("  Max %s" % max(fits))
-        print("  Avg %s" % mean)
-        print("  Std %s" % std)
-
-        print("-- End of (successful) evolution --")
-
-        best_ind = tools.selBest(pop, 1)[0]
-        print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+        # print("  Min %s" % min(fits))
+        # print("  Max %s" % max(fits))
+        # print("  Avg %s" % mean)
+        # print("  Std %s" % std)
+        #
+        # print("-- End of (successful) evolution --")
+        #
+    best_ind = tools.selBest(pop, 1)[0]
+    print("Generations %s" % (g));
+    print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
 
 
 if __name__ == "__main__":
