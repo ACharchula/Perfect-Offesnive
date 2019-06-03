@@ -3,6 +3,8 @@ import csv
 from src.simulated_annealing import *
 from src.linear_check import *
 from src.structures import AllData
+from src.evolutionary import run_evolutionary_algorithm
+from prettytable import PrettyTable
 
 players_and_scores = dict()
 
@@ -88,4 +90,22 @@ def write_results(shotons, expected_value, max_cost, steps, Tmax, Tmin):
     print('linear speed: ' + str(result[2]))
 
 
-test_simanneal()
+# test_simanneal()
+
+x = PrettyTable()
+x.field_names = ["Population size", "Stagnation", "Time", "Generations", "Best Individual", "Score", "Price"]
+
+for i in range(1, 10):
+    pop_size = 6 + i
+    stagnation = 200
+    start = time.time()
+    g, best_ind, score = run_evolutionary_algorithm(0.5, 0.8, pop_size * i, 99, stagnation, 12.0)
+    end = time.time()
+
+    print("Generations %s" % g)
+    print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+    print("Time is ", end - start)
+    x.add_row([pop_size, stagnation, end - start, g, best_ind, score,
+               (int(best_ind[0]) + int(best_ind[3]) + int(best_ind[6])) / 3])
+
+print(x)

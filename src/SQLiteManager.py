@@ -160,4 +160,4 @@ def create_data_csv_files():
     save_to_csv('players_with_avg_shotons_2.csv', players_shotons_final)
 
 
-create_data_csv_files()
+# create_data_csv_files()

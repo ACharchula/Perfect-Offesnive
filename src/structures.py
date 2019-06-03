@@ -58,7 +58,6 @@ class AllData:
     def assign_neighbours(self):
         count = 0
         for k1, v1 in self.players_and_scores.items():
-            print(count)
             for k2, v2 in self.players_and_scores.items():
                 if k1 == k2:
                     continue
@@ -95,7 +94,10 @@ class AllData:
             return players_tuple
 
     def get_all_neighbors(self, players):
-        return self.players_and_scores[players].neighbours
+        if players in self.players_and_scores is not None:
+            return self.players_and_scores[players].neighbours
+        else:
+            return []
 
     def get_random_players(self):
         return random.choice(list(self.players_and_scores.keys()))

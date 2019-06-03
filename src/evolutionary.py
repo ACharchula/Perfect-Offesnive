@@ -6,21 +6,21 @@ from src.structures import *
 
 data = AllData.load_data_from_file("przestrzen2.txt")
 
-def evaluate(individual):
-    # max_price = 99
-    # score = data.get_score(individual)
-    # cost = (int(individual[0]) + int(individual[3]) + int(individual[6])) / 3
-    # if cost < max_price:
-    #     return score,
-    #
-    # return 0.0,
-    return data.get_score(individual),
+
+def evaluate(individual, max_price):
+    score = data.get_score(individual)
+    cost = (int(individual[0]) + int(individual[3]) + int(individual[6])) / 3
+    if cost < max_price:
+        return score,
+
+    return 0.0,
+    # return data.get_score(individual),
+
 
 # crossover is about swapping last players of two threes
 def cross_over(individual1, individual2):
-    individual1 = individual1[:6] + individual2[6:10]
-    individual2 = individual2[:6] + individual1[6:10]
-    return creator.Individual(individual1), creator.Individual(individual2)
+    return creator.Individual(individual1[:6] + individual2[6:10]), creator.Individual(
+        individual2[:6] + individual1[6:10])
 
 
 # we randomly choose if we mutate or not. If we do we randomly pick a neighbor (if one exists) of the individual
@@ -52,32 +52,29 @@ toolbox.register("select", tools.selBest)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 
-def main():
-    pop = toolbox.population(n=10)
+def run_evolutionary_algorithm(crossover_possibility, mutation_possibility, population_size, max_price, max_stagnation, wanted_value):
+    pop = toolbox.population(n=population_size)
 
     for ind in pop:
-        ind.fitness.values = toolbox.evaluate(ind)
+        ind.fitness.values = toolbox.evaluate(ind, max_price)
 
-    fits = [ind.fitness.values[0] for ind in pop]
-
-    print(max(fits))
-    print(tools.selBest(pop, 1)[0])
-
-    print("----------------------------")
-    print(pop)
-
-    CXPB = 0.5
-    MUTPB = 0.2
+    CXPB = crossover_possibility
+    MUTPB = mutation_possibility
 
     g = 0
-    while max(fits) < 13:
-        g = g + 1
-        # print("-- Generation %i --" % g)
+    didnt_change = 0
+    curr_best = tools.selBest(pop, 1)[0]
+    fits = [ind.fitness.values[0] for ind in pop]
+    if wanted_value is None:
+        wanted_value = -1
 
+
+    while didnt_change < max_stagnation:# and max(fits) >= wanted_value:
+        g = g + 1
         # Select the next generation individuals
         offspring = toolbox.select(pop, len(pop))
         # Clone the selected individuals
-        offspring = list(map(toolbox.clone, offspring))
+        # offspring = list(map(toolbox.clone, offspring))
 
         for i in range(0, len(offspring) - 1, 2):
             if random.random() < CXPB:
@@ -87,37 +84,21 @@ def main():
             if random.random() < MUTPB:
                 offspring[i] = toolbox.mutate(offspring[i])
 
-        # print("Offspring ")
-        # print(offspring)
-        # The population is entirely replaced by the offspring
-        # sorted_pop = pop + offspring
-        # sorted_pop.sort(key=lambda x: toolbox.evaluate(x), reverse=True)
         best_ind = tools.selBest(pop, 1)[0]
+        # we make sure to take the best element from previous population to the next population
         pop = toolbox.select([best_ind] + offspring, len(pop))
 
+        # increasing counter if the best element remains the same
+        if best_ind == curr_best:
+            didnt_change = didnt_change + 1
+        else:
+            didnt_change = 0
+            curr_best = best_ind
 
         for ind in pop:
-            ind.fitness.values = toolbox.evaluate(ind)
+            ind.fitness.values = toolbox.evaluate(ind, max_price)
 
-        # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
 
-        length = len(pop)
-        mean = sum(fits) / length
-        sum2 = sum(x * x for x in fits)
-        std = abs(sum2 / length - mean ** 2) ** 0.5
-
-        print("  Min %s" % min(fits))
-        print("  Max %s" % max(fits))
-        print("  Avg %s" % mean)
-        print("  Std %s" % std)
-
-        print("-- End of (successful) evolution --")
-        #
     best_ind = tools.selBest(pop, 1)[0]
-    print("Generations %s" % (g));
-    print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
-
-
-if __name__ == "__main__":
-    main()
+    return g, best_ind, best_ind.fitness.values
