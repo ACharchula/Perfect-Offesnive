@@ -49,6 +49,8 @@ def test_one_set_of_parameters(data, selection, tournSize=None):
                                                                                             13.0)
     x.add_row([10, 200, avg_time, avg_gen, avg_score, high_score, price, 10, accuracy])
     print(x)
+    with open('evo_results', 'a+') as w:
+        w.write(str(x))
 
 
 def test_evolutionary_algorithm_with_changing_population_size(goal, selection, step, cross_over_prob, mutation_prob,
@@ -74,6 +76,8 @@ def test_evolutionary_algorithm_with_changing_population_size(goal, selection, s
         x.add_row([popSize, stagnation, avg_time, avg_gen, avg_score, high_score, price, n, accuracy])
         popSize = pop_size + i * step
     print(x)
+    with open('evo_results', 'a+') as w:
+        w.write(str(x))
 
 
 def test_evolutionary_algorithm_with_changing_stagnation(goal, selection, step, cross_over_prob, mutation_prob,
@@ -100,6 +104,8 @@ def test_evolutionary_algorithm_with_changing_stagnation(goal, selection, step, 
         stagnation_ = stagnation + i * step
 
     print(x)
+    with open('evo_results', 'a+') as w:
+        w.write(str(x))
 
 
 def test_evolutionary_algorithm_with_decreasing_cross_over_propability(goal, selection, step, cross_over_prob,
@@ -126,6 +132,8 @@ def test_evolutionary_algorithm_with_decreasing_cross_over_propability(goal, sel
         crspb = crspb - step
 
     print(x)
+    with open('evo_results', 'a+') as w:
+        w.write(str(x))
 
 
 def test_evolutionary_algorithm_with_decreasing_mutation_propability(goal, selection, step, cross_over_prob,
@@ -152,6 +160,8 @@ def test_evolutionary_algorithm_with_decreasing_mutation_propability(goal, selec
         mtnpb = mtnpb - step
 
     print(x)
+    with open('evo_results', 'a+') as w:
+        w.write(str(x))
 
 
 def test_evo():
@@ -201,8 +211,8 @@ def run_tests(data, selection):
                                                                       300, linear_result[1])
             test_evolutionary_algorithm_with_changing_population_size(data, selection, 20, 0.85, 0.4, 100, max_price,
                                                                       300, linear_result[1])
-            test_evolutionary_algorithm_with_changing_stagnation(data, selection, 15, 0.85, 0.4, 100, max_price, 100)
-            test_evolutionary_algorithm_with_changing_stagnation(data, selection, 20, 0.85, 0.4, 100, max_price, 300)
+            test_evolutionary_algorithm_with_changing_stagnation(data, selection, 15, 0.85, 0.4, 100, max_price, 100, linear_result[1])
+            test_evolutionary_algorithm_with_changing_stagnation(data, selection, 20, 0.85, 0.4, 100, max_price, 300, linear_result[1])
             test_evolutionary_algorithm_with_decreasing_cross_over_propability(data, selection, 0.05, 0.85, 0.4, 100,
                                                                                max_price, 300, linear_result[1])
             test_evolutionary_algorithm_with_decreasing_mutation_propability(data, selection, 0.05, 0.85, 0.9, 100,
