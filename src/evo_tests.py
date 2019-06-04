@@ -37,12 +37,12 @@ def run_n_times_and_gather_info(n, expected_result, func_to_run, *args):
     return generations / len(results), sum / len(results), total_time / len(results), highest_score, good / n, price
 
 
-def test_one_set_of_parameters():
+def test_one_set_of_parameters(data, selection, tournSize=None):
     x = PrettyTable()
     x.field_names = ["Population size", "Stagnation", "Avg Time", "Avg Generations", "Avg Score", "Highest Score",
                      "Price", "Repetitions", "Accuracy"]
 
-    evo = Evo(Data.SHOTONS, Selection.BEST)
+    evo = Evo(data, selection, tournSize=tournSize)
     avg_gen, avg_score, avg_time, high_score, accuracy, price = run_n_times_and_gather_info(10, 13,
                                                                                             evo.run_evolutionary_algorithm,
                                                                                             0.5, 0.2, 100, 99, 200,
@@ -163,10 +163,10 @@ def test_evo():
 
 def run_tests(data, selection):
     if selection is Selection.TOURNAMENT:
-        basic_tourn_size = 10
-        for i in range(1, 4):
+        basic_tourn_size = 2
+        for i in range(0, 10):
             test_evolutionary_algorithm_with_changing_population_size(data, selection, 15, 0.85, 0.4, 10, 100, 300, 99,
-                                                                      tournSize=basic_tourn_size * i)
+                                                                      tournSize=basic_tourn_size+i)
 
         for max_price in range(100, 60, -10):
             if data is Data.SHOTONS:

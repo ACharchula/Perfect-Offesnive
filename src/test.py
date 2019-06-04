@@ -1,10 +1,11 @@
 import csv
 
 from src.SQLiteManager import create_dict_from_file
+from src.evolutionary import Data, Selection
 from src.simulated_annealing import *
 from src.linear_check import *
 from src.structures import AllData
-from src.evo_tests import test_evo
+from src.evo_tests import test_evo, test_one_set_of_parameters
 
 players_and_scores = dict()
 
@@ -85,3 +86,4 @@ def write_results(shotons, expected_value, max_cost, steps, Tmax, Tmin):
 
 
 test_evo()
+
