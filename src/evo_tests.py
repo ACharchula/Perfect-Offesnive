@@ -156,9 +156,9 @@ def test_evolutionary_algorithm_with_decreasing_mutation_propability(goal, selec
 
 def test_evo():
     run_tests(Data.SHOTONS, Selection.BEST)
-    # run_tests(Data.SHOTONS, Selection.TOURNAMENT)
-    # run_tests(Data.GOALS, Selection.BEST)
-    # run_tests(Data.GOALS, Selection.TOURNAMENT)
+    run_tests(Data.SHOTONS, Selection.TOURNAMENT)
+    run_tests(Data.GOALS, Selection.BEST)
+    run_tests(Data.GOALS, Selection.TOURNAMENT)
 
 
 def run_tests(data, selection):
