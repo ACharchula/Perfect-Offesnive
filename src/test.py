@@ -1,11 +1,21 @@
 import csv
 
+
+from prettytable import PrettyTable
+
+from src.simanneal_tests import perform_all_simanneal_test
+from src.simulated_annealing import *
+from src.linear_check import *
+from src.structures import AllData
+from src.evolutionary import run_evolutionary_algorithm
+
 from src.SQLiteManager import create_dict_from_file
 from src.evolutionary import Data, Selection
 from src.simulated_annealing import *
 from src.linear_check import *
 from src.structures import AllData
 from src.evo_tests import test_evo, test_one_set_of_parameters
+
 
 players_and_scores = dict()
 
@@ -25,6 +35,27 @@ def create_search_space_for_shotons():
     data = AllData(players_and_scores)
     data.assign_neighbours()
     data.save_data_to_file("przestrzen2.txt")
+
+
+perform_all_simanneal_test()
+
+# x = PrettyTable()
+# x.field_names = ["Population size", "Stagnation", "Time", "Generations", "Best Individual", "Score", "Price"]
+#
+# for i in range(1, 10):
+#     pop_size = 6 + i
+#     stagnation = 200
+#     start = time.time()
+#     g, best_ind, score = run_evolutionary_algorithm(0.5, 0.8, pop_size * i, 99, stagnation, 12.0)
+#     end = time.time()
+#
+#     print("Generations %s" % g)
+#     print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
+#     print("Time is ", end - start)
+#     x.add_row([pop_size, stagnation, end - start, g, best_ind, score,
+#                (int(best_ind[0]) + int(best_ind[3]) + int(best_ind[6])) / 3])
+#
+# print(x)
 
 
 def simulated_annealing(shotons, value_to_find, max_price, steps, test, Tmax, Tmin):
@@ -86,4 +117,3 @@ def write_results(shotons, expected_value, max_cost, steps, Tmax, Tmin):
 
 
 test_evo()
-
