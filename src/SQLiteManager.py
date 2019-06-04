@@ -159,5 +159,14 @@ def create_data_csv_files():
     players_shotons_final = add_goals_to_shotons(players_goals, players_shotons)
     save_to_csv('players_with_avg_shotons_2.csv', players_shotons_final)
 
+def create_dict_from_file(filename):
+    result = dict()
 
+    with open(filename) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            key = (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+            result[key] = row[9]
+
+    return result
 # create_data_csv_files()
