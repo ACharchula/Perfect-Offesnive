@@ -52,19 +52,35 @@ class SimulatedAnnealing(Annealer):
         return result
 
 
-def perform_simulated_annealing(start_key, data, steps, value_to_find, max_price):
-    sa = SimulatedAnnealing(start_key, data, value_to_find, max_price)
+def perform_simulated_annealing(start_key, data, steps, value_to_find, max_price, Tmax, Tmin, stagnation):
+    sa = SimulatedAnnealing(start_key, data, value_to_find, max_price, stagnation)
+    sa_auto = SimulatedAnnealing(start_key, data, value_to_find, max_price, stagnation)
+
+    if Tmax == -1 or Tmin == -1:
+        auto_schedule = sa_auto.auto(minutes=1)
+        sa.Tmax = auto_schedule.get('tmax')
+        sa.Tmin = auto_schedule.get('tmin')
+
     sa.steps = steps
+
+    if Tmax != -1:
+        sa.Tmax = Tmax
+
+    if Tmin != -1:
+        sa.Tmin = Tmin
+    sa.updates = 0
     sa.copy_strategy = "slice"
     print('===Simulated Annealing===')
     start = time.time()
     state, e = sa.anneal()
     end = time.time()
     print("Time =" + (end - start).__str__() )
-    print(data.players_and_scores[state].player1)
-    print(data.players_and_scores[state].player2)
-    print(data.players_and_scores[state].player3)
-    print(data.players_and_scores[state].score)
+    price = int(data.players_and_scores[state].player1.overall) + int(data.players_and_scores[state].player2.overall) + int(data.players_and_scores[state].player3.overall)
+    print("Player 1: " + str(data.players_and_scores[state].player1))
+    print("Player 2: " + str(data.players_and_scores[state].player2))
+    print("Player 3: " + str(data.players_and_scores[state].player3))
+    print("Score: " + str(data.players_and_scores[state].score))
+    print("Price: " + str(price/3))
     print('=========================')
 
 def perform_simulated_annealing_test(start_key, data, steps, value_to_find, max_price, Tmax, Tmin, stagnation):

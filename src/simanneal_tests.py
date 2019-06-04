@@ -151,7 +151,7 @@ def simulated_annealing(shotons, value_to_find, max_price, steps, test, Tmax, Tm
     if test:
         return perform_simulated_annealing_test(key, data, steps, value_to_find, max_price, Tmax, Tmin, stagnation)
     else:
-        perform_simulated_annealing(key, data, steps, value_to_find, max_price, stagnation)
+        perform_simulated_annealing(key, data, steps, value_to_find, max_price,Tmax, Tmin, stagnation)
 
     return
 
