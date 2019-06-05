@@ -1,10 +1,5 @@
-
-
-from src.simanneal_tests import perform_all_simanneal_test
-
 from src.SQLiteManager import create_dict_from_file
 from src.structures import AllData
-from src.evo_tests import test_evo
 
 
 players_and_scores = dict()
@@ -21,7 +16,3 @@ def create_search_space_for_shotons():
     data = AllData(players_and_scores)
     data.assign_neighbours()
     data.save_data_to_file("przestrzen2.txt")
-
-
-perform_all_simanneal_test()
-test_evo()
