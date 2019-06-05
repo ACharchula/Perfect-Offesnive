@@ -10,6 +10,7 @@ def run_n_times_and_gather_info(n, expected_result, func_to_run, *args):
     highest_score = 0
     good = 0
     price = 0
+    best_ind = ()
     for i in range(0, n):
         start = time.time()
         result = func_to_run(*args)
@@ -18,6 +19,7 @@ def run_n_times_and_gather_info(n, expected_result, func_to_run, *args):
         if result[2][0] > highest_score:
             highest_score = result[2][0]
             price = (int(result[1][0]) + int(result[1][3]) + int(result[1][6])) / 3
+            best_ind = result[1]
 
         if result[2][0] == expected_result:
             good = good + 1
@@ -34,20 +36,20 @@ def run_n_times_and_gather_info(n, expected_result, func_to_run, *args):
         sum += elem[2][0]
         generations += elem[0]
 
-    return generations / len(results), sum / len(results), total_time / len(results), highest_score, good / n, price
+    return generations / len(results), sum / len(results), total_time / len(results), highest_score, good / n, price, best_ind
 
 
-def test_one_set_of_parameters(data, selection, tournSize=None):
+def test_one_set_of_parameters(data, selection, repetitions, copb, mtnpb,pop_size, max_price, stagnation, expected_result=None, tournSize=None):
     x = PrettyTable()
     x.field_names = ["Population size", "Stagnation", "Avg Time", "Avg Generations", "Avg Score", "Highest Score",
-                     "Price", "Repetitions", "Accuracy"]
+                     "Price", "Repetitions", "Accuracy", "Best ind"]
 
     evo = Evo(data, selection, tournSize=tournSize)
-    avg_gen, avg_score, avg_time, high_score, accuracy, price = run_n_times_and_gather_info(10, 13,
+    avg_gen, avg_score, avg_time, high_score, accuracy, price, best_ind = run_n_times_and_gather_info(int(repetitions), float(expected_result),
                                                                                             evo.run_evolutionary_algorithm,
-                                                                                            0.5, 0.2, 100, 99, 200,
-                                                                                            13.0)
-    x.add_row([10, 200, avg_time, avg_gen, avg_score, high_score, price, 10, accuracy])
+                                                                                            float(copb), float(mtnpb), int(pop_size), float(max_price),
+                                                                                            int(stagnation), float(expected_result))
+    x.add_row([10, 200, avg_time, avg_gen, avg_score, high_score, price, repetitions, accuracy, best_ind])
     print(x)
     with open('evo_results', 'a+') as w:
         w.write(str(x))
